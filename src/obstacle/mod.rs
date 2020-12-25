@@ -17,7 +17,7 @@ fn read_file(filename: String) -> String {
 
 #[get("/obstakeltypes.json")]
 fn get_obstacle_types() -> content::Json<String> {
-    let result: String = read_file("fixxx-pakjekraam/config/markt/obstakeltypes.json".to_string());
+    let result: String = read_file("/tmp/fixxx-pakjekraam/config/markt/obstakeltypes.json".to_string());
     content::Json(result)
 }
 

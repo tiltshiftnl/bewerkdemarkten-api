@@ -17,7 +17,7 @@ fn read_file(filename: String) -> String {
 
 #[get("/mededelingen.json")]
 fn get_announcements() -> content::Json<String> {
-    let result: String = read_file("fixxx-pakjekraam/config/markt/mededelingen.json".to_string());
+    let result: String = read_file("/tmp/fixxx-pakjekraam/config/markt/mededelingen.json".to_string());
     content::Json(result)
 }
 

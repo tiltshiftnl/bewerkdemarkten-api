@@ -17,7 +17,7 @@ fn read_file(filename: String) -> String {
 
 #[get("/daysClosed.json")]
 fn get_days_closed() -> content::Json<String> {
-    let result: String = read_file("fixxx-pakjekraam/config/markt/daysClosed.json".to_string());
+    let result: String = read_file("/tmp/fixxx-pakjekraam/config/markt/daysClosed.json".to_string());
     content::Json(result)
 }
 

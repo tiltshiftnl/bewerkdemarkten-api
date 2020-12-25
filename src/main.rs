@@ -13,9 +13,9 @@ mod properties;
 
 fn main() {
     let url = "https://github.com/Amsterdam/fixxx-pakjekraam.git";
-    match Repository::clone(url, "./fixxx-pakjekraam") {
+    match Repository::clone(url, "/tmp/fixxx-pakjekraam") {
        Ok(_repo) => println!("Repo cloned"),
-       Err(e) => println!("failed to clone: {}", e),
+       Err(e) => println!("Failed to clone: {}", e),
     };
     let mut rocket = rocket::ignite();
     rocket = announcement::mount(rocket);
