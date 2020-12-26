@@ -15,12 +15,34 @@ fn read_file(filename: String) -> String {
     }
 }
 
+
+#[get("/test")]
+fn get_test() -> content::Json<String> {
+    //let array: Vec<String> = vec!["a".to_string(), "b".to_string(), "c".to_string()];
+    
+    let result: String = read_file("/tmp/fixxx-pakjekraam/config/markt/daysClosed.json".to_string());
+    println!("{}", result);
+    let array: Vec<String> = match serde_json::from_str(&result) {
+        Ok(result) => result,
+        Err(e) => {
+            println!("Fail: {}", e);
+            vec!["error".to_string()]
+        },
+    };
+
+    let result: String = match serde_json::to_string(&array) {
+        Ok(result) => result,
+        Err(_err) => "error".to_string(),
+    };
+    content::Json(result)
+}
+
 #[get("/daysClosed.json")]
 fn get_days_closed() -> content::Json<String> {
-    let result: String = read_file("/tmp/fixxx-pakjekraam/config/markt/daysClosed.json".to_string());
+    let result: String = read_file("fixxx-pakjekraam/config/markt/daysClosed.json".to_string());
     content::Json(result)
 }
 
 pub fn mount(rocket: rocket::Rocket) -> rocket::Rocket {
-    rocket.mount("/api", routes![get_days_closed])
+    rocket.mount("/api", routes![get_days_closed, get_test])
 }
