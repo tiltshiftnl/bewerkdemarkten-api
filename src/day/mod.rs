@@ -20,9 +20,8 @@ fn read_file(filename: String) -> String {
 fn get_test() -> content::Json<String> {
     //let array: Vec<String> = vec!["a".to_string(), "b".to_string(), "c".to_string()];
     
-    let result: String = read_file("/tmp/fixxx-pakjekraam/config/markt/daysClosed.json".to_string());
-    println!("{}", result);
-    let array: Vec<String> = match serde_json::from_str(&result) {
+    let file: String = read_file("/tmp/fixxx-pakjekraam/config/markt/daysClosed.json".to_string());
+    let array: Vec<String> = match serde_json::from_str(&file) {
         Ok(result) => result,
         Err(e) => {
             println!("Fail: {}", e);
