@@ -5,11 +5,7 @@ extern crate rocket;
 
 use git2::Repository;
 
-mod announcement;
-mod branche;
-mod day;
-mod obstacle;
-mod properties;
+mod jsonreaders;
 
 fn main() {
     let url = "https://github.com/Amsterdam/fixxx-pakjekraam.git";
@@ -18,10 +14,6 @@ fn main() {
        Err(e) => println!("Failed to clone: {}", e),
     };
     let mut rocket = rocket::ignite();
-    rocket = announcement::mount(rocket);
-    rocket = branche::mount(rocket);
-    rocket = day::mount(rocket);
-    rocket = obstacle::mount(rocket);
-    rocket = properties::mount(rocket);
+    rocket = jsonreaders::mount(rocket);
     rocket.launch();
 }
