@@ -80,7 +80,7 @@ fn get_properties() -> Json<Vec<String>> {
 
 pub fn mount(rocket: rocket::Rocket) -> rocket::Rocket {
     rocket.mount(
-        "/api",
+        "/api/v1",
         routes![
             get_days_closed,
             get_obstacle_types,
