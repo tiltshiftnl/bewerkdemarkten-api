@@ -17,13 +17,14 @@ fn visit_dirs() -> Result<HashMap<String, models::Market>> {
             if path.is_dir() {
                 match entry.file_name().into_string() {
                     Ok(file_name) => {
+                        
                         let market: models::Market = models::Market::new(
                             i,
-                            "".to_string(),
+                            file_name.rsplit("-").take(1).collect(),
                             "".to_string(),
                         );
                         markets.insert(
-                            file_name,
+                            file_name.split("-").take(1).collect(),
                             market
                         );
                         i = i + 1;
