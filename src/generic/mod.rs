@@ -1,9 +1,9 @@
 use rocket::{self};
 use rocket_contrib::json::Json;
-use std::io::{Read, Result};
-use std::fs::{self, File};
-use std::path::Path;
 use std::collections::HashMap;
+use std::fs::{self, File};
+use std::io::{Read, Result};
+use std::path::Path;
 mod models;
 
 fn visit_dirs() -> Result<HashMap<String, models::Market>> {
@@ -17,19 +17,15 @@ fn visit_dirs() -> Result<HashMap<String, models::Market>> {
             if path.is_dir() {
                 match entry.file_name().into_string() {
                     Ok(file_name) => {
-                        
                         let market: models::Market = models::Market::new(
                             i,
                             file_name.rsplit("-").take(1).collect(),
-                            "".to_string(),
+                            String::from(""),
                         );
-                        markets.insert(
-                            file_name.split("-").take(1).collect(),
-                            market
-                        );
+                        markets.insert(file_name.split("-").take(1).collect(), market);
                         i = i + 1;
-                    },
-                    Err(_) => { /* Do nothing */},
+                    }
+                    Err(_) => { /* Do nothing */ }
                 }
             }
         }
@@ -37,16 +33,15 @@ fn visit_dirs() -> Result<HashMap<String, models::Market>> {
     Ok(markets)
 }
 
-
 fn read_file(filename: &str) -> String {
-    match File::open(filename.to_string()) {
+    match File::open(String::from(filename)) {
         Ok(mut file) => {
             let mut contents = String::new();
             file.read_to_string(&mut contents)
                 .expect("Unable to read the file");
             return contents;
         }
-        Err(_error) => return "{ \"error\": \"Error opening file\" }".to_string(),
+        Err(_error) => return String::from("{ \"error\": \"Error opening file\" }"),
     }
 }
 
@@ -82,7 +77,7 @@ fn get_days_closed() -> Json<Vec<String>> {
         Ok(result) => result,
         Err(e) => {
             println!("Fail: {}", e);
-            vec!["error".to_string()]
+            vec![String::from("error")]
         }
     })
 }
@@ -94,7 +89,7 @@ fn get_markets() -> Json<Option<HashMap<String, models::Market>>> {
         Err(e) => {
             println!("Fail: {}", e);
             None
-        },
+        }
     })
 }
 
@@ -105,7 +100,7 @@ fn get_obstacle_types() -> Json<Vec<String>> {
         Ok(result) => result,
         Err(e) => {
             println!("Fail: {}", e);
-            vec!["error".to_string()]
+            vec![String::from("error")]
         }
     })
 }
@@ -118,7 +113,7 @@ fn get_properties() -> Json<Vec<String>> {
         Ok(result) => result,
         Err(e) => {
             println!("Fail: {}", e);
-            vec!["error".to_string()]
+            vec![String::from("error")]
         }
     })
 }

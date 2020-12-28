@@ -12,7 +12,7 @@ fn read_file(filename: String) -> String {
                 .expect("Unable to read the file");
             return contents;
         }
-        Err(_error) => return "{ \"error\": \"Error opening file\" }".to_string(),
+        Err(_error) => return String::from("{ \"error\": \"Error opening file\" }"),
     }
 }
 
