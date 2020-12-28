@@ -5,6 +5,8 @@ extern crate rocket;
 extern crate dotenv;
 
 use git2::Repository;
+use rocket::http::Method;
+use rocket_cors::{AllowedHeaders, AllowedOrigins};
 use dotenv::dotenv;
 use std::env;
 mod generic;
@@ -24,8 +26,20 @@ fn main() {
         Err(e) => println!("couldn't interpret {}: {}", "GIT_REPOSITORY", e),
     };
 
+    let allowed_origins = AllowedOrigins::some_exact(&["http://localhost:3000"]);
+
+    // You can also deserialize this
+    let cors = rocket_cors::CorsOptions {
+        allowed_origins,
+        allowed_methods: vec![Method::Get].into_iter().map(From::from).collect(),
+        allowed_headers: AllowedHeaders::some(&["Authorization", "Accept"]),
+        allow_credentials: true,
+        ..Default::default()
+    }
+    .to_cors().expect("Error could not create CORS fairing");
+
     let mut rocket = rocket::ignite();
     rocket = generic::mount(rocket);
     rocket = market::mount(rocket);
-    rocket.launch();
+    rocket.attach(cors).launch();
 }

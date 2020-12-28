@@ -1,8 +1,41 @@
 use rocket::{self};
 use rocket_contrib::json::Json;
-use std::fs::File;
-use std::io::Read;
+use std::io::{Read, Result};
+use std::fs::{self, File};
+use std::path::Path;
+use std::collections::HashMap;
 mod models;
+
+fn visit_dirs() -> Result<HashMap<String, models::Market>> {
+    let dir = Path::new("/tmp/fixxx-pakjekraam/config/markt");
+    let mut markets: HashMap<String, models::Market> = HashMap::new();
+    if dir.is_dir() {
+        let mut i: i32 = 0;
+        for entry in fs::read_dir(&dir)? {
+            let entry = entry?;
+            let path = entry.path();
+            if path.is_dir() {
+                match entry.file_name().into_string() {
+                    Ok(file_name) => {
+                        let market: models::Market = models::Market::new(
+                            i,
+                            "".to_string(),
+                            "".to_string(),
+                        );
+                        markets.insert(
+                            file_name,
+                            market
+                        );
+                        i = i + 1;
+                    },
+                    Err(_) => { /* Do nothing */},
+                }
+            }
+        }
+    }
+    Ok(markets)
+}
+
 
 fn read_file(filename: &str) -> String {
     match File::open(filename.to_string()) {
@@ -53,6 +86,17 @@ fn get_days_closed() -> Json<Vec<String>> {
     })
 }
 
+#[get("/markets.json")]
+fn get_markets() -> Json<Option<HashMap<String, models::Market>>> {
+    Json(match visit_dirs() {
+        Ok(result) => Some(result),
+        Err(e) => {
+            println!("Fail: {}", e);
+            None
+        },
+    })
+}
+
 #[get("/obstakeltypes.json")]
 fn get_obstacle_types() -> Json<Vec<String>> {
     let obstacle_types: String = read_file("/tmp/fixxx-pakjekraam/config/markt/obstakeltypes.json");
@@ -87,6 +131,7 @@ pub fn mount(rocket: rocket::Rocket) -> rocket::Rocket {
             get_properties,
             get_branches,
             get_announcements,
+            get_markets,
         ],
     )
 }
