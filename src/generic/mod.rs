@@ -3,10 +3,101 @@ use rocket_contrib::json::Json;
 use std::collections::HashMap;
 use std::fs::{self, File};
 use std::io::{Read, Result};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 mod models;
 
-fn visit_dirs() -> Result<HashMap<String, models::Market>> {
+fn set_market(markets: &HashMap<String, models::Market>, market_id: &String, day_id: &String, i: &i32) -> models::Market {
+    let weekday: Option<i32> = match &day_id[..] {
+        "MA" => Some(1),
+        "DI" => Some(2),
+        "WO" => Some(3),
+        "DO" => Some(4),
+        "VR" => Some(5),
+        "ZA" => Some(6),
+        "ZO" => Some(7),
+        _ => None,
+    };
+
+    let mut new_market: models::Market = models::Market::new(
+        *i,
+        None,
+    );
+
+    if markets.contains_key(market_id) {
+        let market = markets.get(market_id).unwrap();
+        // Insert cloned events from previous state
+        for (key, value) in market.events.iter() {
+            new_market.events.insert(key.clone(), value.clone());
+        }
+    }
+    // TODO Check if there is a pdf available for this market day?
+    match find_pdf_file(format!("{}-{}-{}.pdf", "kaart", market_id.to_string(), day_id)) {
+        Some(filepath) => {
+            let name: String = match filepath.file_stem(){
+                Some(n) => match n.to_str() {
+                    Some(m) => String::from(m.to_string()),
+                    None => String::from("")
+                },
+                None => String::from(""),
+            };
+            // Add the new event.
+            new_market.events.insert(
+                day_id.clone(),
+                models::Event::new(
+                    weekday,
+                    Some(models::Plan::new(name)),
+                ),
+            );
+        },
+        //println!("Pdf found: {:?}", filepath.file_stem()),
+        None => {
+            println!("No pdf found.");
+            new_market.events.insert(
+                day_id.clone(),
+                models::Event::new(
+                    weekday,
+                    None
+                ),
+            );
+        },
+    };
+    // // Add the new event.
+    // new_market.events.insert(
+    //     day_id.clone(),
+    //     models::Event::new(
+    //         weekday,
+    //         None
+    //     ),
+    // );
+    new_market
+}
+
+
+/**
+ * Find a rusv file in the current or parent directories of the given directory.
+ */
+fn find_pdf_file(filename: String) -> Option<PathBuf> {
+    let mut directory = Path::new("/tmp/fixxx-pakjekraam/dist/pdf");
+    let pdf_filename = Path::new(&filename);
+
+    loop {
+        let filepath: PathBuf = [
+            directory,
+            pdf_filename
+        ].iter().collect();
+
+        if filepath.is_file() {
+            return Some(filepath);
+        }
+
+        match directory.parent() {
+            Some(parent) => directory = parent,
+            None => return None,
+        }
+    }
+}
+
+fn read_markets() -> Result<HashMap<String, models::Market>> {
     let dir = Path::new("/tmp/fixxx-pakjekraam/config/markt");
     let mut markets: HashMap<String, models::Market> = HashMap::new();
     if dir.is_dir() {
@@ -17,12 +108,9 @@ fn visit_dirs() -> Result<HashMap<String, models::Market>> {
             if path.is_dir() {
                 match entry.file_name().into_string() {
                     Ok(file_name) => {
-                        let market: models::Market = models::Market::new(
-                            i,
-                            file_name.rsplit("-").take(1).collect(),
-                            String::from(""),
-                        );
-                        markets.insert(file_name.split("-").take(1).collect(), market);
+                        let market_id = file_name.split("-").take(1).collect();
+                        let day_id: String = file_name.rsplit("-").take(1).collect();
+                        markets.insert(file_name.split("-").take(1).collect(), set_market(&markets, &market_id, &day_id, &i));
                         i = i + 1;
                     }
                     Err(_) => { /* Do nothing */ }
@@ -45,7 +133,7 @@ fn read_file(filename: &str) -> String {
     }
 }
 
-#[get("/mededelingen.json")]
+#[get("/markt/mededelingen.json")]
 fn get_announcements() -> Json<Option<models::Announcements>> {
     let announcements: String = read_file("/tmp/fixxx-pakjekraam/config/markt/mededelingen.json");
     Json(match serde_json::from_str(&announcements) {
@@ -57,7 +145,7 @@ fn get_announcements() -> Json<Option<models::Announcements>> {
     })
 }
 
-#[get("/branches.json")]
+#[get("/markt/branches.json")]
 fn get_branches() -> Json<Vec<models::Branche>> {
     let branches: String = read_file("/tmp/fixxx-pakjekraam/config/markt/branches.json");
     Json(match serde_json::from_str(&branches) {
@@ -69,7 +157,7 @@ fn get_branches() -> Json<Vec<models::Branche>> {
     })
 }
 
-#[get("/daysClosed.json")]
+#[get("/markt/daysClosed.json")]
 fn get_days_closed() -> Json<Vec<String>> {
     let days_closed: String = read_file("/tmp/fixxx-pakjekraam/config/markt/daysClosed.json");
 
@@ -84,7 +172,7 @@ fn get_days_closed() -> Json<Vec<String>> {
 
 #[get("/markets.json")]
 fn get_markets() -> Json<Option<HashMap<String, models::Market>>> {
-    Json(match visit_dirs() {
+    Json(match read_markets() {
         Ok(result) => Some(result),
         Err(e) => {
             println!("Fail: {}", e);
@@ -93,7 +181,7 @@ fn get_markets() -> Json<Option<HashMap<String, models::Market>>> {
     })
 }
 
-#[get("/obstakeltypes.json")]
+#[get("/markt/obstakeltypes.json")]
 fn get_obstacle_types() -> Json<Vec<String>> {
     let obstacle_types: String = read_file("/tmp/fixxx-pakjekraam/config/markt/obstakeltypes.json");
     Json(match serde_json::from_str(&obstacle_types) {
@@ -105,7 +193,7 @@ fn get_obstacle_types() -> Json<Vec<String>> {
     })
 }
 
-#[get("/plaatseigenschappen.json")]
+#[get("/markt/plaatseigenschappen.json")]
 fn get_properties() -> Json<Vec<String>> {
     let properties: String =
         read_file("/tmp/fixxx-pakjekraam/config/markt/plaatseigenschappen.json");

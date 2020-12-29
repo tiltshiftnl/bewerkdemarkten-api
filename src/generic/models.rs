@@ -36,35 +36,60 @@ pub struct Branche {
     color: Option<String>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Event {
+    #[serde(skip_serializing_if = "Option::is_none")]
     weekday: Option<i32>,
-    plan: Plan,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct Market {
-    id: i32,
-    name: String,
-    phase: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
     plan: Option<Plan>,
-    events: Option<HashMap<String, Event>>
 }
 
-impl Market {
-    pub fn new(id: i32, name: String, phase: String) -> Self {
-        Market {
-            id: id,
-            name: name,
-            phase: phase,
-            events: None,
-            plan: None,
+impl Event {
+    pub fn new(weekday: Option<i32>, plan: Option<Plan>) -> Self {
+        Event {
+            weekday: weekday,
+            plan: plan,
         }
     }
 }
 
 #[derive(Serialize, Deserialize)]
+pub struct Market {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    id: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    phase: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    plan: Option<Plan>,
+    pub events: HashMap<String, Event>,
+}
+
+impl Market {
+    pub fn new(id: i32, name: Option<String>) -> Self {
+        Market {
+            id: Some(id),
+            name: name,
+            events: HashMap::new(),
+            plan: None,
+            phase: None,
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Plan {
     name: String,
-    pages: i32,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pages: Option<i32>,
+}
+
+impl Plan {
+    pub fn new(name: String) -> Self {
+        Plan {
+            name: name,
+            pages: None,
+        }
+    }
 }

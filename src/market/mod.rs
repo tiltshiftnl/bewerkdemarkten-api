@@ -78,7 +78,7 @@ fn get_market_day_pages(market_day: String) -> Json<Option<Vec<models::Page>>> {
 
 pub fn mount(rocket: rocket::Rocket) -> rocket::Rocket {
     rocket.mount(
-        "/api/v1",
+        "/api/v1/markt",
         routes![
             get_market_day_branches,
             get_market_day_geography,
