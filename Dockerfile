@@ -16,7 +16,7 @@ ENV GIT_REPOSITORY=https://github.com/Amsterdam/fixxx-pakjekraam.git
 # Replace the secret in a public facing API
 ENV ROCKET_SECRET_KEY=8Xui8SN4mI+7egV/9dlfYYLGQJeEx4+DwmSQLwDVXJg=
 # Database connection
-ENV DATABASE_URL "postgresql://postgres:postgres@127.0.0.1:5432/bewerkdemarkten"
+ENV DATABASE_URL="postgresql://postgres:postgres@127.0.0.1:5432/bewerkdemarkten"
 
 VOLUME /tmp
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/

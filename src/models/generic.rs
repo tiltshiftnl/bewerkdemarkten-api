@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize)]
-struct Announcement {
+pub struct Announcement {
     #[serde(rename(serialize = "activatie", deserialize = "activatie"))]
     activation: String,
     #[serde(rename(serialize = "wenperiode", deserialize = "wenperiode"))]

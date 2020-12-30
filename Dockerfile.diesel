@@ -2,7 +2,7 @@ FROM rust:1.48
 
 LABEL maintainer="Milo van der Linden <milo@@tiltshift.nl>"
 
-ENV DATABASE_URL "postgresql://postgres:postgres@127.0.0.1:5432/bewerkdemarkten"
+ENV DATABASE_URL="postgresql://postgres:postgres@127.0.0.1:5432/bewerkdemarkten"
 RUN cargo install diesel_cli --no-default-features --features postgres
 
 COPY . /home/rust/

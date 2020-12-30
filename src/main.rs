@@ -39,7 +39,8 @@ fn main() {
     .to_cors().expect("Error could not create CORS fairing");
 
     let mut rocket = rocket::ignite();
-    rocket = generic::mount(rocket);
-    rocket = market::mount(rocket);
+    rocket = generic::v1::mount(rocket);
+    rocket = market::v1::mount(rocket);
+    rocket = market::v2::mount(rocket);
     rocket.attach(cors).launch();
 }

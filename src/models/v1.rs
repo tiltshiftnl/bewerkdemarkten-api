@@ -46,7 +46,7 @@ pub struct Location {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct Market {
+pub struct Rows {
     rows: Vec<Vec<String>>,
 }
 
