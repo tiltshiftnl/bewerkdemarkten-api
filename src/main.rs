@@ -11,6 +11,7 @@ use dotenv::dotenv;
 use std::env;
 mod generic;
 mod market;
+mod connection;
 
 fn main() {
     
