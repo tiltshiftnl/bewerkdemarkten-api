@@ -1,15 +1,17 @@
 //use bewerkdemarkten_api::models::v2::{InsertableMarket, Market};
-use bewerkdemarkten_api::models::v2::{Market};
+use bewerkdemarkten_api::models::v2::Market;
 use bewerkdemarkten_api::schema::markets;
-use diesel;
 use diesel::prelude::*;
 use diesel::result::Error;
 
 use rocket::http::Status;
+use rocket_contrib::databases::diesel;
 use rocket_contrib::json::Json;
-use crate::DbConn;
+#[database("bewerkdemarkten_db")]
+struct DbConn(diesel::PgConnection);
+//use crate::DbConn;
 
-pub fn all(connection: &PgConnection) -> QueryResult<Vec<Market>> {
+pub fn load_markets(connection: &PgConnection) -> QueryResult<Vec<Market>> {
     markets::table.load::<Market>(connection)
 }
 
@@ -35,7 +37,7 @@ pub fn all(connection: &PgConnection) -> QueryResult<Vec<Market>> {
 
 #[get("/")]
 fn get_all(connection: DbConn) -> Result<Json<Vec<Market>>, Status> {
-    all(&connection)
+    load_markets(&connection)
         .map(|market| Json(market))
         .map_err(|error| error_status(error))
 }
@@ -48,5 +50,7 @@ fn error_status(error: Error) -> Status {
 }
 
 pub fn mount(rocket: rocket::Rocket) -> rocket::Rocket {
-    rocket.mount("/api/v2", routes![get_all,])
+    rocket
+        //.attach(DbConn::fairing()) // Should not go here as it will wreck the API when the database connection throws errors
+        .mount("/api/v2", routes![get_all,])
 }
