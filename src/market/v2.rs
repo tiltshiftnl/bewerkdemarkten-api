@@ -1,4 +1,3 @@
-use bewerkdemarkten_api::connection::{DbConn};
 //use bewerkdemarkten_api::models::v2::{InsertableMarket, Market};
 use bewerkdemarkten_api::models::v2::{Market};
 use bewerkdemarkten_api::schema::markets;
@@ -8,6 +7,7 @@ use diesel::result::Error;
 
 use rocket::http::Status;
 use rocket_contrib::json::Json;
+use crate::DbConn;
 
 pub fn all(connection: &PgConnection) -> QueryResult<Vec<Market>> {
     markets::table.load::<Market>(connection)
