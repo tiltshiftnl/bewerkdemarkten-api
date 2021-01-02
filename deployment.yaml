@@ -11,49 +11,33 @@ spec:
       port: 8000
       targetPort: 8000
 ---
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Pod
 metadata:
   name: bewerkdemarkten-api
-  labels:
-    app: bewerkdemarkten-api-service
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: bewerkdemarkten-api-service
-  template:
-    metadata:
-      labels:
-        app: bewerkdemarkten-api-service
-    spec:
-      imagePullSecrets:
-      - name: pipeline-docker-registry
-      containers:
-      - name: bewerkdemarkten-api-service
-        image: bewerkdemarkten-api:${CICD_EXECUTION_SEQUENCE}
-        ports:
-        - containerPort: 8000
-        envFrom:
-        - configMapRef:
-            name: bewerkdemarkten-config
-        imagePullPolicy: Always
+  imagePullSecrets:
+  - name: pipeline-docker-registry
+  containers:
+  - name: bewerkdemarkten-api-service
+    image: bewerkdemarkten-api:${CICD_EXECUTION_SEQUENCE}
+    ports:
+    - containerPort: 8000
+    envFrom:
+    - configMapRef:
+        name: bewerkdemarkten-config
+    imagePullPolicy: Always
 
-      initContainers:
-      - name: bewerkdemarkten-setup
-        image: bewerkdemarkten-init:latest
-        imagePullSecrets:
-        - name: pipeline-docker-registry
-        envFrom:
-        - configMapRef:
-            name: bewerkdemarkten-config
-        command: ['diesel', 'setup']
-      - name: bewerkdemarkten-migrations
-        image: bewerkdemarkten-init:latest
-        imagePullSecrets:
-        - name: pipeline-docker-registry
-        command: ['diesel', 'migration', 'run']
-        
-        envFrom:
-        - configMapRef:
-            name: bewerkdemarkten-config
+  initContainers:
+  - name: bewerkdemarkten-setup
+    image: bewerkdemarkten-init:latest
+    envFrom:
+    - configMapRef:
+      name: bewerkdemarkten-config
+    command: ['diesel', 'setup']
+  - name: bewerkdemarkten-migrations
+    image: bewerkdemarkten-init:latest
+    command: ['diesel', 'migration', 'run']
+    envFrom:
+    - configMapRef:
+      name: bewerkdemarkten-config
