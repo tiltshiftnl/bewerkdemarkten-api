@@ -41,19 +41,14 @@ spec:
 
       initContainers:
       - name: bewerkdemarkten-setup
-        image: bewerkdemarkten-init:${CICD_EXECUTION_SEQUENCE}
+        image: bewerkdemarkten-init:latest
         envFrom:
         - configMapRef:
             name: bewerkdemarkten-config
-        imagePullPolicy: Always
-
         command: ['diesel', 'setup']
       - name: bewerkdemarkten-migrations
-        image: bewerkdemarkten-init:${CICD_EXECUTION_SEQUENCE}
+        image: bewerkdemarkten-init:latest
         command: ['diesel', 'migration', 'run']
         envFrom:
         - configMapRef:
             name: bewerkdemarkten-config
-        imagePullPolicy: Always
-
-
