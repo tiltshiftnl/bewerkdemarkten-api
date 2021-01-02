@@ -4,28 +4,28 @@ metadata:
   name: bewerkdemarkten-api-service
 spec:
   selector:
-    app: bewerkdemarkten-api
+    app: bewerkdemarkten-api-service
   type: NodePort
   ports:
     - protocol: TCP
       port: 8000
       targetPort: 8000
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: bewerkdemarkten-pod
+  name: bewerkdemarkten-api
   labels:
-    app: bewerkdemarkten-api
+    app: bewerkdemarkten-api-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: bewerkdemarkten-api
+      app: bewerkdemarkten-api-service
   template:
     metadata:
       labels:
-        app: bewerkdemarkten-api
+        app: bewerkdemarkten-api-service
     spec:
       imagePullSecrets:
       - name: pipeline-docker-registry
