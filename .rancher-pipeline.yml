@@ -4,7 +4,7 @@ stages:
   - publishImageConfig:
       dockerfilePath: ./Dockerfile.diesel
       buildContext: .
-      tag: bewerkdemarkten-init:${CICD_EXECUTION_SEQUENCE}
+      tag: bewerkdemarkten-init:latest
 - name: Publish
   steps:
   - publishImageConfig:
