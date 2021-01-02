@@ -51,8 +51,8 @@ table! {
         id -> Int4,
         name -> Varchar,
         abbreviation -> Varchar,
-        //createdAt -> Timestamptz,
-        //updatedAt -> Timestamptz,
+        createdAt -> Timestamptz,
+        updatedAt -> Timestamptz,
     }
 }
 

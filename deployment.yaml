@@ -31,6 +31,29 @@ spec:
       - name: pipeline-docker-registry
       containers:
       - name: bewerkdemarkten-api-service
-        image: ${CICD_IMAGE}:${CICD_EXECUTION_SEQUENCE}
+        image: bewerkdemarkten-api:${CICD_EXECUTION_SEQUENCE}
         ports:
         - containerPort: 8000
+        envFrom:
+        - configMapRef:
+            name: bewerkdemarkten-config
+        imagePullPolicy: Always
+
+      initContainers:
+      - name: bewerkdemarkten-setup
+        image: bewerkdemarkten-init:${CICD_EXECUTION_SEQUENCE}
+        envFrom:
+        - configMapRef:
+            name: bewerkdemarkten-config
+        imagePullPolicy: Always
+
+        command: ['diesel', 'setup']
+      - name: bewerkdemarkten-migrations
+        image: bewerkdemarkten-init:${CICD_EXECUTION_SEQUENCE}
+        command: ['diesel', 'migration', 'run']
+        envFrom:
+        - configMapRef:
+            name: bewerkdemarkten-config
+        imagePullPolicy: Always
+
+

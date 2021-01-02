@@ -8,4 +8,4 @@ RUN cargo install diesel_cli --no-default-features --features postgres
 COPY . /home/rust/
 WORKDIR /home/rust
 
-CMD ["diesel", "migration", "run"]
+ENTRYPOINT ["diesel"]
