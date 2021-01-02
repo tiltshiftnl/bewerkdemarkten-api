@@ -10,7 +10,7 @@ stages:
   - publishImageConfig:
       dockerfilePath: ./Dockerfile
       buildContext: .
-      tag: bewerkdemarkten-api:${CICD_EXECUTION_SEQUENCE}
+      tag: ${CICD_IMAGE}::${CICD_EXECUTION_SEQUENCE}
 - name: Deploy
   steps:
   - applyYamlConfig:
