@@ -33,11 +33,11 @@ spec:
     image: bewerkdemarkten-init:latest
     envFrom:
     - configMapRef:
-      name: bewerkdemarkten-config
+        name: bewerkdemarkten-config
     command: ['diesel', 'setup']
   - name: bewerkdemarkten-migrations
     image: bewerkdemarkten-init:latest
     command: ['diesel', 'migration', 'run']
     envFrom:
     - configMapRef:
-      name: bewerkdemarkten-config
+        name: bewerkdemarkten-config
