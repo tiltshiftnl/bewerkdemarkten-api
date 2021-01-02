@@ -42,13 +42,18 @@ spec:
       initContainers:
       - name: bewerkdemarkten-setup
         image: bewerkdemarkten-init:latest
+        imagePullSecrets:
+        - name: pipeline-docker-registry
         envFrom:
         - configMapRef:
             name: bewerkdemarkten-config
         command: ['diesel', 'setup']
       - name: bewerkdemarkten-migrations
         image: bewerkdemarkten-init:latest
+        imagePullSecrets:
+        - name: pipeline-docker-registry
         command: ['diesel', 'migration', 'run']
+        
         envFrom:
         - configMapRef:
             name: bewerkdemarkten-config
