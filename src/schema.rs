@@ -12,8 +12,10 @@ table! {
         bak -> Nullable<Bool>,
         eigenMaterieel -> Nullable<Bool>,
         brancheId -> Nullable<Int4>,
-        createdAt -> Timestamptz,
-        updatedAt -> Timestamptz,
+        #[sql_name = "createdAt"]
+        created_at -> Timestamptz,
+        #[sql_name = "updatedAt"]
+        updated_at -> Timestamptz,
     }
 }
 
@@ -31,8 +33,10 @@ table! {
         bak -> Nullable<Bool>,
         eigenMaterieel -> Nullable<Bool>,
         brancheId -> Nullable<Int4>,
-        createdAt -> Timestamptz,
-        updatedAt -> Timestamptz,
+        #[sql_name = "createdAt"]
+        created_at -> Timestamptz,
+        #[sql_name = "updatedAt"]
+        updated_at -> Timestamptz,
     }
 }
 
@@ -51,8 +55,10 @@ table! {
         id -> Int4,
         name -> Varchar,
         abbreviation -> Varchar,
-        createdAt -> Timestamptz,
-        updatedAt -> Timestamptz,
+        #[sql_name = "createdAt"]
+        created_at -> Timestamptz,
+        #[sql_name = "updatedAt"]
+        updated_at -> Timestamptz,
     }
 }
 
@@ -63,8 +69,10 @@ table! {
         erkenningsNummer -> Nullable<Varchar>,
         plaatsId -> Nullable<Varchar>,
         priority -> Nullable<Int4>,
-        createdAt -> Timestamptz,
-        updatedAt -> Timestamptz,
+        #[sql_name = "createdAt"]
+        created_at -> Timestamptz,
+        #[sql_name = "updatedAt"]
+        updated_at -> Timestamptz,
     }
 }
 
@@ -75,8 +83,10 @@ table! {
         marktDate -> Nullable<Date>,
         erkenningsNummer -> Nullable<Varchar>,
         attending -> Nullable<Bool>,
-        createdAt -> Timestamptz,
-        updatedAt -> Timestamptz,
+        #[sql_name = "createdAt"]
+        created_at -> Timestamptz,
+        #[sql_name = "updatedAt"]
+        updated_at -> Timestamptz,
     }
 }
 
@@ -102,8 +112,10 @@ table! {
         inrichting -> Nullable<Varchar>,
         absentFrom -> Nullable<Date>,
         absentUntil -> Nullable<Date>,
-        createdAt -> Timestamptz,
-        updatedAt -> Timestamptz,
+        #[sql_name = "createdAt"]
+        created_at -> Timestamptz,
+        #[sql_name = "updatedAt"]
+        updated_at -> Timestamptz,
     }
 }
 

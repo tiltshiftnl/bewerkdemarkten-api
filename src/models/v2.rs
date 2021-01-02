@@ -7,6 +7,7 @@ use crate::schema::markets;
 use crate::schema::markets::dsl::markets as all_markets;
 
 /* For beeing able to serialize */
+use chrono::{DateTime, Utc};
 use serde::Serialize;
 
 #[derive(Debug, Queryable, Serialize, AsChangeset)]
@@ -14,6 +15,8 @@ pub struct Market {
     pub id: i32,
     pub name: String,
     pub abbreviation: String,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
 }
 
 #[derive(Insertable, Serialize)]
