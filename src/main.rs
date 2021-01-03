@@ -74,5 +74,7 @@ fn main() {
     rocket = generic::v1::mount(rocket);
     rocket = market::v1::mount(rocket);
     //rocket = market::v2::mount(rocket);
-    rocket.register(catchers![not_found]).attach(cors).attach(DbConn::fairing()).launch();
+    rocket.register(catchers![not_found]).attach(cors)
+    //.attach(DbConn::fairing())
+    .launch();
 }
