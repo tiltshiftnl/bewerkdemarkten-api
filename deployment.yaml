@@ -27,6 +27,15 @@ spec:
       labels:
         app: bewerkdemarkten-api-service
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: is-persistent
+                operator: In
+                values:
+                - "true"
       imagePullSecrets:
       - name: pipeline-docker-registry
       containers:
