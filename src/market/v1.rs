@@ -1,9 +1,7 @@
 use bewerkdemarkten_api::models::v1::{Branche, Geography, Location, Page, Rows};
-use rocket::{self};
-use rocket::{response::Debug, Data};
+use rocket::{self, response::Debug, Data};
 use rocket_contrib::json::Json;
-use std::fs::File;
-use std::{io, io::Read};
+use std::{io, io::Read, fs::File};
 
 fn read_file(filename: String) -> String {
     match File::open(filename) {
@@ -92,12 +90,25 @@ fn get_market_day_pages(market_day: String) -> Json<Option<Vec<Page>>> {
     })
 }
 
+#[get(
+    "/<market_day>/download/pdf"
+)]
+fn get_market_day_pdf(market_day: String) ->  Option<File> {
+    let filename: String = format!(
+        "/tmp/fixxx-pakjekraam/dist/pdf/{}-{}.pdf",
+        "kaart",
+        market_day.to_string()
+    );
+    println!("{}", filename);
+    File::open(&filename).ok()
+}
+
 #[post(
     "/<market_day>/upload/pdf",
     format = "multipart/form-data",
     data = "<data>"
 )]
-fn post_market_pdf(market_day: String, data: Data) -> Result<String, Debug<io::Error>> {
+fn post_market_day_pdf(market_day: String, data: Data) -> Result<String, Debug<io::Error>> {
     let filename: String = format!(
         "/tmp/fixxx-pakjekraam/dist/pdf/{}-{}.pdf",
         "kaart",
@@ -118,7 +129,8 @@ pub fn mount(rocket: rocket::Rocket) -> rocket::Rocket {
             get_market_day_locations,
             get_market_day_rows,
             get_market_day_pages,
-            post_market_pdf,
+            get_market_day_pdf,
+            post_market_day_pdf,
         ],
     )
 }
