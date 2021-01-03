@@ -1,8 +1,9 @@
+use bewerkdemarkten_api::models::v1::{Branche, Geography, Location, Page, Rows};
 use rocket::{self};
+use rocket::{response::Debug, Data};
 use rocket_contrib::json::Json;
 use std::fs::File;
-use std::io::Read;
-use bewerkdemarkten_api::models::v1::{Branche, Geography, Location, Rows, Page};
+use std::{io, io::Read};
 
 fn read_file(filename: String) -> String {
     match File::open(filename) {
@@ -18,7 +19,10 @@ fn read_file(filename: String) -> String {
 
 #[get("/<market_day>/branches.json")]
 fn get_market_day_branches(market_day: String) -> Json<Option<Vec<Branche>>> {
-    let market_day_branches: String = read_file(format!("/tmp/fixxx-pakjekraam/config/markt/{}/branches.json", market_day));
+    let market_day_branches: String = read_file(format!(
+        "/tmp/fixxx-pakjekraam/config/markt/{}/branches.json",
+        market_day
+    ));
     Json(match serde_json::from_str(&market_day_branches) {
         Ok(result) => result,
         Err(e) => {
@@ -30,7 +34,10 @@ fn get_market_day_branches(market_day: String) -> Json<Option<Vec<Branche>>> {
 
 #[get("/<market_day>/geografie.json")]
 fn get_market_day_geography(market_day: String) -> Json<Option<Geography>> {
-    let market_day_geography: String = read_file(format!("/tmp/fixxx-pakjekraam/config/markt/{}/geografie.json", market_day));
+    let market_day_geography: String = read_file(format!(
+        "/tmp/fixxx-pakjekraam/config/markt/{}/geografie.json",
+        market_day
+    ));
     Json(match serde_json::from_str(&market_day_geography) {
         Ok(result) => result,
         Err(e) => {
@@ -42,7 +49,10 @@ fn get_market_day_geography(market_day: String) -> Json<Option<Geography>> {
 
 #[get("/<market_day>/locaties.json")]
 fn get_market_day_locations(market_day: String) -> Json<Option<Vec<Location>>> {
-    let market_day_locations: String = read_file(format!("/tmp/fixxx-pakjekraam/config/markt/{}/locaties.json", market_day));
+    let market_day_locations: String = read_file(format!(
+        "/tmp/fixxx-pakjekraam/config/markt/{}/locaties.json",
+        market_day
+    ));
     Json(match serde_json::from_str(&market_day_locations) {
         Ok(result) => result,
         Err(e) => {
@@ -54,7 +64,10 @@ fn get_market_day_locations(market_day: String) -> Json<Option<Vec<Location>>> {
 
 #[get("/<market_day>/markt.json")]
 fn get_market_day_rows(market_day: String) -> Json<Option<Rows>> {
-    let market_day_rows: String = read_file(format!("/tmp/fixxx-pakjekraam/config/markt/{}/markt.json", market_day));
+    let market_day_rows: String = read_file(format!(
+        "/tmp/fixxx-pakjekraam/config/markt/{}/markt.json",
+        market_day
+    ));
     Json(match serde_json::from_str(&market_day_rows) {
         Ok(result) => result,
         Err(e) => {
@@ -66,7 +79,10 @@ fn get_market_day_rows(market_day: String) -> Json<Option<Rows>> {
 
 #[get("/<market_day>/paginas.json")]
 fn get_market_day_pages(market_day: String) -> Json<Option<Vec<Page>>> {
-    let market_day_pages: String = read_file(format!("/tmp/fixxx-pakjekraam/config/markt/{}/paginas.json", market_day));
+    let market_day_pages: String = read_file(format!(
+        "/tmp/fixxx-pakjekraam/config/markt/{}/paginas.json",
+        market_day
+    ));
     Json(match serde_json::from_str(&market_day_pages) {
         Ok(result) => result,
         Err(e) => {
@@ -74,6 +90,23 @@ fn get_market_day_pages(market_day: String) -> Json<Option<Vec<Page>>> {
             None
         }
     })
+}
+
+#[post(
+    "/<market_day>/upload/pdf",
+    format = "multipart/form-data",
+    data = "<data>"
+)]
+fn post_market_pdf(market_day: String, data: Data) -> Result<String, Debug<io::Error>> {
+    let filename: String = format!(
+        "/tmp/fixxx-pakjekraam/dist/pdf/{}-{}.pdf",
+        "kaart",
+        market_day.to_string()
+    );
+    //data.open().take(1000000);
+    data.stream_to_file(filename)
+        .map(|n| n.to_string())
+        .map_err(Debug)
 }
 
 pub fn mount(rocket: rocket::Rocket) -> rocket::Rocket {
@@ -85,6 +118,7 @@ pub fn mount(rocket: rocket::Rocket) -> rocket::Rocket {
             get_market_day_locations,
             get_market_day_rows,
             get_market_day_pages,
+            post_market_pdf,
         ],
     )
 }

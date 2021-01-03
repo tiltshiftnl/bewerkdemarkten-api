@@ -23,8 +23,13 @@ mod market;
 // pub struct DbConn(pub diesel::PgConnection);
 
 #[catch(500)]
-fn not_found() -> Json<&'static str> {
+fn server_error() -> Json<&'static str> {
     Json("{\"error\": \"not implemented\"}")
+}
+
+#[catch(404)]
+fn not_found() -> Json<&'static str> {
+    Json("{\"error\": \"not found\"}")
 }
 
 // fn database_url() -> String {
@@ -74,7 +79,7 @@ fn main() {
     rocket = generic::v1::mount(rocket);
     rocket = market::v1::mount(rocket);
     //rocket = market::v2::mount(rocket);
-    rocket.register(catchers![not_found]).attach(cors)
+    rocket.register(catchers![not_found, server_error]).attach(cors)
     //.attach(DbConn::fairing())
     .launch();
 }
