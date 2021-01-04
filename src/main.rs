@@ -12,7 +12,8 @@ use git2::Repository;
 //use rocket_contrib::databases::diesel;
 use rocket::http::Method;
 use rocket::response::content::Json;
-use rocket_cors::{AllowedHeaders, AllowedOrigins};
+use rocket_cors::{AllowedOrigins}
+;
 //use std::collections::HashMap;
 use std::env;
 
@@ -51,14 +52,16 @@ fn main() {
     };
 
     // Cors
-    let allowed_origins = AllowedOrigins::some_exact(&["http://localhost:3000"]);
+
+    let allowed_origins =
+        AllowedOrigins::some_exact(&["http://localhost:3000","https://bewerkdemarkten.tiltshiftapps.nl"]);
     let cors = rocket_cors::CorsOptions {
         allowed_origins,
         allowed_methods: vec![Method::Get, Method::Post, Method::Delete, Method::Options]
             .into_iter()
             .map(From::from)
             .collect(),
-        allowed_headers: AllowedHeaders::some(&["Authorization", "Accept"]),
+        fairing_route_base: "/api".to_string(),
         allow_credentials: true,
         ..Default::default()
     }
@@ -83,8 +86,9 @@ fn main() {
     rocket = market::v1::mount(rocket);
     //rocket = market::v2::mount(rocket);
     rocket
+        // Mount the routes to catch all the OPTIONS pre-flight requests
+        //.mount("/", rocket_cors::catch_all_options_routes())
         .register(catchers![not_found, server_error])
         .attach(cors)
-        //.attach(DbConn::fairing())
         .launch();
 }
