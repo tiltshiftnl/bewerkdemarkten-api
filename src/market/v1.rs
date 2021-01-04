@@ -1,7 +1,7 @@
 use bewerkdemarkten_api::models::v1::{Branche, Geography, Location, Page, Rows};
 use rocket::{self, response::Debug, Data};
 use rocket_contrib::json::Json;
-use std::{error::Error, fs::create_dir_all, fs::write, fs::File, io, io::Read};
+use std::{error::Error, fs::create_dir_all, fs::remove_file, fs::write, fs::File, io, io::Read};
 
 fn read_file(filename: String) -> String {
     match File::open(filename) {
@@ -48,7 +48,6 @@ fn post_market_day_branches(
     write(&filename, data)?;
     Ok(Json("ok".to_string()))
 }
-
 
 #[get("/<market_day>/geografie.json")]
 fn get_market_day_geography(market_day: String) -> Json<Option<Geography>> {
@@ -213,10 +212,23 @@ fn post_market_day_pdf(market_day: String, data: Data) -> Result<String, Debug<i
         .map_err(Debug)
 }
 
+#[delete("/<market_day>/delete/pdf")]
+fn delete_market_day_pdf(market_day: String) -> Result<String, Debug<io::Error>> {
+    let filename: String = format!(
+        "/tmp/fixxx-pakjekraam/dist/pdf/{}-{}.pdf",
+        "kaart",
+        market_day.to_string()
+    );
+    remove_file(&filename)
+        .map(|_| "ok".to_string())
+        .map_err(Debug)
+}
+
 pub fn mount(rocket: rocket::Rocket) -> rocket::Rocket {
     rocket.mount(
         "/api/v1/markt",
         routes![
+            delete_market_day_pdf,
             get_market_day_branches,
             get_market_day_geography,
             get_market_day_locations,

@@ -54,7 +54,10 @@ fn main() {
     let allowed_origins = AllowedOrigins::some_exact(&["http://localhost:3000"]);
     let cors = rocket_cors::CorsOptions {
         allowed_origins,
-        allowed_methods: vec![Method::Get, Method::Post].into_iter().map(From::from).collect(),
+        allowed_methods: vec![Method::Get, Method::Post, Method::Delete]
+            .into_iter()
+            .map(From::from)
+            .collect(),
         allowed_headers: AllowedHeaders::some(&["Authorization", "Accept"]),
         allow_credentials: true,
         ..Default::default()
@@ -75,11 +78,13 @@ fn main() {
     //     .unwrap();
 
     // Start
-    let mut rocket = rocket::ignite();//rocket::custom(config);
+    let mut rocket = rocket::ignite(); //rocket::custom(config);
     rocket = generic::v1::mount(rocket);
     rocket = market::v1::mount(rocket);
     //rocket = market::v2::mount(rocket);
-    rocket.register(catchers![not_found, server_error]).attach(cors)
-    //.attach(DbConn::fairing())
-    .launch();
+    rocket
+        .register(catchers![not_found, server_error])
+        .attach(cors)
+        //.attach(DbConn::fairing())
+        .launch();
 }
