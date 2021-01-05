@@ -47,7 +47,15 @@ pub struct Location {
 
 #[derive(Serialize, Deserialize)]
 pub struct Rows {
-    rows: Vec<Vec<String>>,
+    rows: Vec<Option<Vec<String>>>,
+}
+
+impl Rows {
+    pub fn new() -> Self {
+        Rows {
+            rows: vec![],
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize)]

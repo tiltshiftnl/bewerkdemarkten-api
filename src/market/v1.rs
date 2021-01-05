@@ -127,7 +127,7 @@ fn get_market_day_rows(market_day: String) -> Json<Option<Rows>> {
         Ok(result) => result,
         Err(e) => {
             println!("Fail: {}", e);
-            None
+            Some(Rows::new())
         }
     })
 }
