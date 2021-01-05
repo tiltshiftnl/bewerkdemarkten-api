@@ -25,7 +25,7 @@ fn get_market_day_branches(market_day: String) -> Json<Option<Vec<Branche>>> {
         Ok(result) => result,
         Err(e) => {
             println!("Fail: {}", e);
-            None
+            vec![]
         }
     })
 }
@@ -83,17 +83,14 @@ fn post_market_day_geography(
     Ok(Json("ok".to_string()))
 }
 
-#[get("/<market_day>/locaties.json")]
-fn get_market_day_locations(market_day: String) -> Json<Option<Vec<Location>>> {
-    let market_day_locations: String = read_file(format!(
-        "/tmp/fixxx-pakjekraam/config/markt/{}/locaties.json",
+#[get("/<market_day>/locaties.json")]None
         market_day
     ));
     Json(match serde_json::from_str(&market_day_locations) {
         Ok(result) => result,
         Err(e) => {
             println!("Fail: {}", e);
-            None
+            vec![]
         }
     })
 }
@@ -161,7 +158,7 @@ fn get_market_day_pages(market_day: String) -> Json<Option<Vec<Page>>> {
         Ok(result) => result,
         Err(e) => {
             println!("Fail: {}", e);
-            None
+            vec![]
         }
     })
 }
