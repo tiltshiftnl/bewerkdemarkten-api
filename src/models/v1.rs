@@ -32,6 +32,14 @@ pub struct Geography {
     obstacles: Vec<Obstacle>,
 }
 
+impl Geography {
+    pub fn new() -> Self {
+        Geography {
+            obstacles: vec![],
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize)]
 pub struct Location {
     #[serde(rename(serialize = "plaatsId", deserialize = "plaatsId"))]

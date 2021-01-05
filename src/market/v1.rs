@@ -59,7 +59,7 @@ fn get_market_day_geography(market_day: String) -> Json<Option<Geography>> {
         Ok(result) => result,
         Err(e) => {
             println!("Fail: {}", e);
-            None
+            Some(Geography::new())
         }
     })
 }
