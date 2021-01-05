@@ -16,7 +16,7 @@ fn read_file(filename: String) -> String {
 }
 
 #[get("/<market_day>/branches.json")]
-fn get_market_day_branches(market_day: String) -> Json<Option<Vec<Branche>>> {
+fn get_market_day_branches(market_day: String) -> Json<Vec<Option<Branche>>> {
     let market_day_branches: String = read_file(format!(
         "/tmp/fixxx-pakjekraam/config/markt/{}/branches.json",
         market_day
@@ -83,7 +83,10 @@ fn post_market_day_geography(
     Ok(Json("ok".to_string()))
 }
 
-#[get("/<market_day>/locaties.json")]None
+#[get("/<market_day>/locaties.json")]
+fn get_market_day_locations(market_day: String) -> Json<Vec<Option<Location>>> {
+    let market_day_locations: String = read_file(format!(
+        "/tmp/fixxx-pakjekraam/config/markt/{}/locaties.json",
         market_day
     ));
     Json(match serde_json::from_str(&market_day_locations) {
@@ -149,7 +152,7 @@ fn post_market_day_rows(
 }
 
 #[get("/<market_day>/paginas.json")]
-fn get_market_day_pages(market_day: String) -> Json<Option<Vec<Page>>> {
+fn get_market_day_pages(market_day: String) -> Json<Vec<Option<Page>>> {
     let market_day_pages: String = read_file(format!(
         "/tmp/fixxx-pakjekraam/config/markt/{}/paginas.json",
         market_day
