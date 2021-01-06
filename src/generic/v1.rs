@@ -1,12 +1,19 @@
+use bewerkdemarkten_api::models::generic::{Announcements, Branche, Event, Market, Plan};
 use rocket::{self};
 use rocket_contrib::json::Json;
-use std::collections::HashMap;
-use std::fs::{self, File};
-use std::io::{Read, Result};
-use std::path::{Path, PathBuf};
-use bewerkdemarkten_api::models::generic::{Announcements, Branche, Event, Market, Plan};
+use std::{
+    collections::HashMap,
+    fs::{read_dir, write, File},
+    io::{Read, Result},
+    path::{Path, PathBuf},
+};
 
-fn set_market(markets: &HashMap<String, Market>, market_id: &String, day_id: &String, i: &i32) -> Market {
+fn set_market(
+    markets: &HashMap<String, Market>,
+    market_id: &String,
+    day_id: &String,
+    i: &i32,
+) -> Market {
     let weekday: Option<i32> = match &day_id[..] {
         "MA" => Some(1),
         "DI" => Some(2),
@@ -18,10 +25,7 @@ fn set_market(markets: &HashMap<String, Market>, market_id: &String, day_id: &St
         _ => None,
     };
 
-    let mut new_market: Market = Market::new(
-        *i,
-        None,
-    );
+    let mut new_market: Market = Market::new(*i, None);
 
     if markets.contains_key(market_id) {
         let market = markets.get(market_id).unwrap();
@@ -31,47 +35,34 @@ fn set_market(markets: &HashMap<String, Market>, market_id: &String, day_id: &St
         }
     }
     // TODO Check if there is a pdf available for this market day?
-    match find_pdf_file(format!("{}-{}-{}.pdf", "kaart", market_id.to_string(), day_id)) {
+    match find_pdf_file(format!(
+        "{}-{}-{}.pdf",
+        "kaart",
+        market_id.to_string(),
+        day_id
+    )) {
         Some(filepath) => {
-            let name: String = match filepath.file_stem(){
+            let name: String = match filepath.file_stem() {
                 Some(n) => match n.to_str() {
                     Some(m) => String::from(m.to_string()),
-                    None => String::from("")
+                    None => String::from(""),
                 },
                 None => String::from(""),
             };
             // Add the new event.
-            new_market.events.insert(
-                day_id.clone(),
-                Event::new(
-                    weekday,
-                    Some(Plan::new(name)),
-                ),
-            );
-        },
-        //println!("Pdf found: {:?}", filepath.file_stem()),
+            new_market
+                .events
+                .insert(day_id.clone(), Event::new(weekday, Some(Plan::new(name))));
+        }
         None => {
             println!("No pdf found.");
-            new_market.events.insert(
-                day_id.clone(),
-                Event::new(
-                    weekday,
-                    None
-                ),
-            );
-        },
+            new_market
+                .events
+                .insert(day_id.clone(), Event::new(weekday, None));
+        }
     };
-    // // Add the new event.
-    // new_market.events.insert(
-    //     day_id.clone(),
-    //     models::Event::new(
-    //         weekday,
-    //         None
-    //     ),
-    // );
     new_market
 }
-
 
 /**
  * Find a rusv file in the current or parent directories of the given directory.
@@ -81,10 +72,7 @@ fn find_pdf_file(filename: String) -> Option<PathBuf> {
     let pdf_filename = Path::new(&filename);
 
     loop {
-        let filepath: PathBuf = [
-            directory,
-            pdf_filename
-        ].iter().collect();
+        let filepath: PathBuf = [directory, pdf_filename].iter().collect();
 
         if filepath.is_file() {
             return Some(filepath);
@@ -102,7 +90,7 @@ fn read_markets() -> Result<HashMap<String, Market>> {
     let mut markets: HashMap<String, Market> = HashMap::new();
     if dir.is_dir() {
         let mut i: i32 = 0;
-        for entry in fs::read_dir(&dir)? {
+        for entry in read_dir(&dir)? {
             let entry = entry?;
             let path = entry.path();
             if path.is_dir() {
@@ -110,7 +98,10 @@ fn read_markets() -> Result<HashMap<String, Market>> {
                     Ok(file_name) => {
                         let market_id = file_name.split("-").take(1).collect();
                         let day_id: String = file_name.rsplit("-").take(1).collect();
-                        markets.insert(file_name.split("-").take(1).collect(), set_market(&markets, &market_id, &day_id, &i));
+                        markets.insert(
+                            file_name.split("-").take(1).collect(),
+                            set_market(&markets, &market_id, &day_id, &i),
+                        );
                         i = i + 1;
                     }
                     Err(_) => { /* Do nothing */ }
@@ -132,6 +123,10 @@ fn read_file(filename: &str) -> String {
         Err(_error) => return String::from("{ \"error\": \"Error opening file\" }"),
     }
 }
+
+/**
+ * Routes
+ */
 
 #[get("/markt/mededelingen.json")]
 fn get_announcements() -> Json<Option<Announcements>> {
@@ -155,6 +150,20 @@ fn get_branches() -> Json<Vec<Branche>> {
             vec![]
         }
     })
+}
+
+#[post("/markt/branches.json",
+format = "application/json",
+data="<data>")]
+fn post_branches(
+    data: Json<Vec<Branche>>
+) -> Result<Json<String>> {
+    let filename: String = String::from(
+        "/tmp/fixxx-pakjekraam/config/markt/branches.json"
+    );
+    let data = serde_json::to_string(&data.into_inner())?;
+    write(&filename, data)?;
+    Ok(Json("ok".to_string()))
 }
 
 #[get("/markt/daysClosed.json")]
@@ -214,6 +223,7 @@ pub fn mount(rocket: rocket::Rocket) -> rocket::Rocket {
             get_obstacle_types,
             get_properties,
             get_branches,
+            post_branches,
             get_announcements,
             get_markets,
         ],
