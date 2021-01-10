@@ -18,7 +18,7 @@ fn read_file(filename: String) -> String {
 #[get("/<market_day>/branches.json")]
 fn get_market_day_branches(market_day: String) -> Json<Vec<Option<Branche>>> {
     let market_day_branches: String = read_file(format!(
-        "/tmp/fixxx-pakjekraam/config/markt/{}/branches.json",
+        "/tmp/makkelijke-markt-pakjekraam/config/markt/{}/branches.json",
         market_day
     ));
     Json(match serde_json::from_str(&market_day_branches) {
@@ -40,11 +40,11 @@ fn post_market_day_branches(
     data: Json<Vec<Branche>>,
 ) -> Result<Json<String>, Box<dyn Error>> {
     let filename: String = format!(
-        "/tmp/fixxx-pakjekraam/config/markt/{}/branches.json",
+        "/tmp/makkelijke-markt-pakjekraam/config/markt/{}/branches.json",
         market_day
     );
     let data = serde_json::to_string(&data.into_inner())?;
-    create_dir_all(format!("/tmp/fixxx-pakjekraam/config/markt/{}", market_day))?;
+    create_dir_all(format!("/tmp/makkelijke-markt-pakjekraam/config/markt/{}", market_day))?;
     write(&filename, data)?;
     Ok(Json("ok".to_string()))
 }
@@ -52,7 +52,7 @@ fn post_market_day_branches(
 #[get("/<market_day>/geografie.json")]
 fn get_market_day_geography(market_day: String) -> Json<Option<Geography>> {
     let market_day_geography: String = read_file(format!(
-        "/tmp/fixxx-pakjekraam/config/markt/{}/geografie.json",
+        "/tmp/makkelijke-markt-pakjekraam/config/markt/{}/geografie.json",
         market_day
     ));
     Json(match serde_json::from_str(&market_day_geography) {
@@ -74,11 +74,11 @@ fn post_market_day_geography(
     data: Json<Option<Geography>>,
 ) -> Result<Json<String>, Box<dyn Error>> {
     let filename: String = format!(
-        "/tmp/fixxx-pakjekraam/config/markt/{}/geografie.json",
+        "/tmp/makkelijke-markt-pakjekraam/config/markt/{}/geografie.json",
         market_day
     );
     let data = serde_json::to_string(&data.into_inner())?;
-    create_dir_all(format!("/tmp/fixxx-pakjekraam/config/markt/{}", market_day))?;
+    create_dir_all(format!("/tmp/makkelijke-markt-pakjekraam/config/markt/{}", market_day))?;
     write(&filename, data)?;
     Ok(Json("ok".to_string()))
 }
@@ -86,7 +86,7 @@ fn post_market_day_geography(
 #[get("/<market_day>/locaties.json")]
 fn get_market_day_locations(market_day: String) -> Json<Vec<Option<Location>>> {
     let market_day_locations: String = read_file(format!(
-        "/tmp/fixxx-pakjekraam/config/markt/{}/locaties.json",
+        "/tmp/makkelijke-markt-pakjekraam/config/markt/{}/locaties.json",
         market_day
     ));
     Json(match serde_json::from_str(&market_day_locations) {
@@ -108,11 +108,11 @@ fn post_market_day_locations(
     data: Json<Vec<Location>>,
 ) -> Result<Json<String>, Box<dyn Error>> {
     let filename: String = format!(
-        "/tmp/fixxx-pakjekraam/config/markt/{}/locaties.json",
+        "/tmp/makkelijke-markt-pakjekraam/config/markt/{}/locaties.json",
         market_day
     );
     let data = serde_json::to_string(&data.into_inner())?;
-    create_dir_all(format!("/tmp/fixxx-pakjekraam/config/markt/{}", market_day))?;
+    create_dir_all(format!("/tmp/makkelijke-markt-pakjekraam/config/markt/{}", market_day))?;
     write(&filename, data)?;
     Ok(Json("ok".to_string()))
 }
@@ -120,7 +120,7 @@ fn post_market_day_locations(
 #[get("/<market_day>/markt.json")]
 fn get_market_day_rows(market_day: String) -> Json<Option<Rows>> {
     let market_day_rows: String = read_file(format!(
-        "/tmp/fixxx-pakjekraam/config/markt/{}/markt.json",
+        "/tmp/makkelijke-markt-pakjekraam/config/markt/{}/markt.json",
         market_day
     ));
     Json(match serde_json::from_str(&market_day_rows) {
@@ -142,11 +142,11 @@ fn post_market_day_rows(
     data: Json<Rows>,
 ) -> Result<Json<String>, Box<dyn Error>> {
     let filename: String = format!(
-        "/tmp/fixxx-pakjekraam/config/markt/{}/markt.json",
+        "/tmp/makkelijke-markt-pakjekraam/config/markt/{}/markt.json",
         market_day
     );
     let data = serde_json::to_string(&data.into_inner())?;
-    create_dir_all(format!("/tmp/fixxx-pakjekraam/config/markt/{}", market_day))?;
+    create_dir_all(format!("/tmp/makkelijke-markt-pakjekraam/config/markt/{}", market_day))?;
     write(&filename, data)?;
     Ok(Json("ok".to_string()))
 }
@@ -154,7 +154,7 @@ fn post_market_day_rows(
 #[get("/<market_day>/paginas.json")]
 fn get_market_day_pages(market_day: String) -> Json<Vec<Option<Page>>> {
     let market_day_pages: String = read_file(format!(
-        "/tmp/fixxx-pakjekraam/config/markt/{}/paginas.json",
+        "/tmp/makkelijke-markt-pakjekraam/config/markt/{}/paginas.json",
         market_day
     ));
     Json(match serde_json::from_str(&market_day_pages) {
@@ -176,11 +176,11 @@ fn post_market_day_pages(
     data: Json<Vec<Page>>,
 ) -> Result<Json<String>, Box<dyn Error>> {
     let filename: String = format!(
-        "/tmp/fixxx-pakjekraam/config/markt/{}/paginas.json",
+        "/tmp/makkelijke-markt-pakjekraam/config/markt/{}/paginas.json",
         market_day
     );
     let data = serde_json::to_string(&data.into_inner())?;
-    create_dir_all(format!("/tmp/fixxx-pakjekraam/config/markt/{}", market_day))?;
+    create_dir_all(format!("/tmp/makkelijke-markt-pakjekraam/config/markt/{}", market_day))?;
     write(&filename, data)?;
     Ok(Json("ok".to_string()))
 }
@@ -188,7 +188,7 @@ fn post_market_day_pages(
 #[get("/<market_day>/download/pdf")]
 fn get_market_day_pdf(market_day: String) -> Option<File> {
     let filename: String = format!(
-        "/tmp/fixxx-pakjekraam/dist/pdf/{}-{}.pdf",
+        "/tmp/makkelijke-markt-pakjekraam/dist/pdf/{}-{}.pdf",
         "kaart",
         market_day.to_string()
     );
@@ -203,7 +203,7 @@ fn get_market_day_pdf(market_day: String) -> Option<File> {
 )]
 fn post_market_day_pdf(market_day: String, data: Data) -> Result<String, Debug<io::Error>> {
     let filename: String = format!(
-        "/tmp/fixxx-pakjekraam/dist/pdf/{}-{}.pdf",
+        "/tmp/makkelijke-markt-pakjekraam/dist/pdf/{}-{}.pdf",
         "kaart",
         market_day.to_string()
     );
@@ -215,7 +215,7 @@ fn post_market_day_pdf(market_day: String, data: Data) -> Result<String, Debug<i
 #[delete("/<market_day>/delete/pdf")]
 fn delete_market_day_pdf(market_day: String) -> Result<String, Debug<io::Error>> {
     let filename: String = format!(
-        "/tmp/fixxx-pakjekraam/dist/pdf/{}-{}.pdf",
+        "/tmp/makkelijke-markt-pakjekraam/dist/pdf/{}-{}.pdf",
         "kaart",
         market_day.to_string()
     );

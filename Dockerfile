@@ -12,7 +12,7 @@ FROM scratch
 LABEL maintainer="Milo van der Linden <milo@@tiltshift.nl>"
 
 # Repository used to get the JSON source files
-ENV GIT_REPOSITORY=https://github.com/Amsterdam/fixxx-pakjekraam.git
+ENV GIT_REPOSITORY=https://github.com/tiltshiftnl/makkelijke-markt-pakjekraam.git
 # Replace the secret in a public facing API
 ENV ROCKET_SECRET_KEY=8Xui8SN4mI+7egV/9dlfYYLGQJeEx4+DwmSQLwDVXJg=
 # Database connection

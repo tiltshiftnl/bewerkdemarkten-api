@@ -178,9 +178,9 @@ pub fn update_repository() {
     let remote_branch: String = "master".to_string();
     // Repository
     let val = env::var("GIT_REPOSITORY").expect("Environment variable not set");
-    let repo = match Repository::clone(&val, "/tmp/fixxx-pakjekraam") {
+    let repo = match Repository::clone(&val, "/tmp/makkelijke-markt-pakjekraam") {
         Ok(repo) => repo,
-        Err(_e) => Repository::open("/tmp/fixxx-pakjekraam").expect("Cannot open repo")
+        Err(_e) => Repository::open("/tmp/makkelijke-markt-pakjekraam").expect("Cannot open repo")
     };
     let mut remote = repo.find_remote(&remote_name).expect("Cannot find remote");
     let fetch_commit = do_fetch(&repo, &[&remote_branch], &mut remote).expect("Cannot find branch");

@@ -68,7 +68,7 @@ fn set_market(
  * Find a rusv file in the current or parent directories of the given directory.
  */
 fn find_pdf_file(filename: String) -> Option<PathBuf> {
-    let mut directory = Path::new("/tmp/fixxx-pakjekraam/dist/pdf");
+    let mut directory = Path::new("/tmp/makkelijke-markt-pakjekraam/dist/pdf");
     let pdf_filename = Path::new(&filename);
 
     loop {
@@ -86,7 +86,7 @@ fn find_pdf_file(filename: String) -> Option<PathBuf> {
 }
 
 fn read_markets() -> Result<HashMap<String, Market>> {
-    let dir = Path::new("/tmp/fixxx-pakjekraam/config/markt");
+    let dir = Path::new("/tmp/makkelijke-markt-pakjekraam/config/markt");
     let mut markets: HashMap<String, Market> = HashMap::new();
     if dir.is_dir() {
         let mut i: i32 = 0;
@@ -130,7 +130,7 @@ fn read_file(filename: &str) -> String {
 
 #[get("/markt/mededelingen.json")]
 fn get_announcements() -> Json<Option<Announcements>> {
-    let announcements: String = read_file("/tmp/fixxx-pakjekraam/config/markt/mededelingen.json");
+    let announcements: String = read_file("/tmp/makkelijke-markt-pakjekraam/config/markt/mededelingen.json");
     Json(match serde_json::from_str(&announcements) {
         Ok(result) => result,
         Err(e) => {
@@ -142,7 +142,7 @@ fn get_announcements() -> Json<Option<Announcements>> {
 
 #[get("/markt/branches.json")]
 fn get_branches() -> Json<Vec<Branche>> {
-    let branches: String = read_file("/tmp/fixxx-pakjekraam/config/markt/branches.json");
+    let branches: String = read_file("/tmp/makkelijke-markt-pakjekraam/config/markt/branches.json");
     Json(match serde_json::from_str(&branches) {
         Ok(result) => result,
         Err(e) => {
@@ -159,7 +159,7 @@ fn post_branches(
     data: Json<Vec<Branche>>
 ) -> Result<Json<String>> {
     let filename: String = String::from(
-        "/tmp/fixxx-pakjekraam/config/markt/branches.json"
+        "/tmp/makkelijke-markt-pakjekraam/config/markt/branches.json"
     );
     let data = serde_json::to_string(&data.into_inner())?;
     write(&filename, data)?;
@@ -168,7 +168,7 @@ fn post_branches(
 
 #[get("/markt/daysClosed.json")]
 fn get_days_closed() -> Json<Vec<String>> {
-    let days_closed: String = read_file("/tmp/fixxx-pakjekraam/config/markt/daysClosed.json");
+    let days_closed: String = read_file("/tmp/makkelijke-markt-pakjekraam/config/markt/daysClosed.json");
 
     Json(match serde_json::from_str(&days_closed) {
         Ok(result) => result,
@@ -192,7 +192,7 @@ fn get_markets() -> Json<Option<HashMap<String, Market>>> {
 
 #[get("/markt/obstakeltypes.json")]
 fn get_obstacle_types() -> Json<Vec<String>> {
-    let obstacle_types: String = read_file("/tmp/fixxx-pakjekraam/config/markt/obstakeltypes.json");
+    let obstacle_types: String = read_file("/tmp/makkelijke-markt-pakjekraam/config/markt/obstakeltypes.json");
     Json(match serde_json::from_str(&obstacle_types) {
         Ok(result) => result,
         Err(e) => {
@@ -205,7 +205,7 @@ fn get_obstacle_types() -> Json<Vec<String>> {
 #[get("/markt/plaatseigenschappen.json")]
 fn get_properties() -> Json<Vec<String>> {
     let properties: String =
-        read_file("/tmp/fixxx-pakjekraam/config/markt/plaatseigenschappen.json");
+        read_file("/tmp/makkelijke-markt-pakjekraam/config/markt/plaatseigenschappen.json");
     Json(match serde_json::from_str(&properties) {
         Ok(result) => result,
         Err(e) => {
